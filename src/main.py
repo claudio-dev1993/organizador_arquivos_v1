@@ -1,8 +1,114 @@
 from datetime import datetime
-import os
 from pathlib import Path
 import logging
 import shutil
+
+PATH_HOME = Path.home()
+
+FILE_CATEGORIES = {
+    'documents': {
+        'suffixes': (
+            '.pdf',
+            '.txt',
+            '.doc',
+            '.docx',
+            '.xls',
+            '.xlsx',
+            '.csv',
+            '.md',
+            '.rtf',
+            '.odt',
+        ),
+        'destination': PATH_HOME / 'Documents',
+    },
+
+    'images': {
+        'suffixes': (
+            '.jpg',
+            '.jpeg',
+            '.png',
+            '.gif',
+            '.bmp',
+            '.tiff',
+            '.webp',
+            '.svg',
+        ),
+        'destination': PATH_HOME / 'Pictures',
+    },
+
+    'audio': {
+        'suffixes': (
+            '.mp3',
+            '.wav',
+            '.flac',
+            '.aac',
+            '.ogg',
+            '.m4a',
+            '.wma',
+        ),
+        'destination': PATH_HOME / 'Music',
+    },
+
+    'videos': {
+        'suffixes': (
+            '.mp4',
+            '.avi',
+            '.mkv',
+            '.mov',
+            '.wmv',
+            '.flv',
+            '.webm',
+        ),
+        'destination': PATH_HOME / 'Videos',
+    },
+
+    'archives': {
+        'suffixes': (
+            '.zip',
+            '.rar',
+            '.7z',
+            '.tar',
+            '.gz',
+            '.bz2',
+        ),
+        'destination': PATH_HOME / 'Downloads',
+    },
+    
+    'executables': {
+        'suffixes': (
+            '.exe',
+            '.msi',
+            '.bat',
+            '.cmd',
+            '.com',
+            '.ini',
+        ),
+        'destination': PATH_HOME / 'Downloads',
+    },
+}
+
+def get_file_category(file: Path) -> dict | None:
+
+    suffix = file.suffix.lower()
+
+    for category, config in FILE_CATEGORIES.items():
+
+        if suffix in config['suffixes']:
+            return config
+
+    return None
+
+def get_destination_folder(category: str) -> Path:
+
+    windows_folders = {
+        'Documents': PATH_HOME / 'Documents',
+        'Pictures': PATH_HOME / 'Pictures',
+        'Music': PATH_HOME / 'Music',
+        'Videos': PATH_HOME / 'Videos',
+        'Downloads': PATH_HOME / 'Downloads',
+    }
+
+    return windows_folders[category]
 
 def clear_logs(log_path: Path, file_limit: int):
         try:
@@ -32,8 +138,8 @@ def setup_logger() -> logging.Logger:
         logger.setLevel(logging.INFO)
 
         if not logger.handlers:
-            base_dir = Path(__file__).resolve().parent
-            log_dir = base_dir.parent / 'logs'
+            base_dir = PATH_HOME / 'Downloads'
+            log_dir = base_dir/ 'logs_organizador_arquivos'
             log_dir.mkdir(parents=True, exist_ok=True)
             log_filename = log_dir / f"{datetime.now().strftime('%d-%m-%Y_%H%M%S')}.log"
 
@@ -54,46 +160,66 @@ def setup_logger() -> logging.Logger:
     except PermissionError as e:
         print(f'Erro ao criar arquivo de log: {e}')
  
+def get_files_from_origin(origin_path: str) -> list:
+    inputs = PATH_HOME / origin_path
+    if not inputs.exists():
+        raise FileNotFoundError(f'Caminho de origem não encontrado: {inputs}')
+    return [file for file in inputs.iterdir() if file.is_file()]
+
+def move_files(files:list, log: logging.Logger):
+            log = setup_logger()
+            qty_files = len(files)
+            moved_files = 0
+            
+            if qty_files == 0:
+                log.info('Nenhum arquivo para movimentação.')
+                return
+            log.info(f'Movendo {qty_files} arquivos para pastas destino.')
+    
+            for file in files:
+                category = get_file_category(file)
+
+                if category is None:
+                   log.warning(f'Arquivo sem extensão definida ou não suportado: {file.name}')
+                   base_dir = PATH_HOME / 'Downloads'
+                   no_extension_file_dir = base_dir/ 'nao_reconhecido'
+                   no_extension_file_dir.mkdir(parents=True, exist_ok=True)
+                   shutil.move(str(file),str(no_extension_file_dir / file.name))
+                   continue
+                
+                destination_folder = category['destination']
+                destination_folder.mkdir( parents=True, exist_ok=True)
+                
+                try:
+                    shutil.move(str(file),str(destination_folder / file.name))
+                except PermissionError as e:
+                    log.error(f"O arquivo {file} Não foi movido por estar aberto ou em uso por outro programa.")
+                    continue
+                except FileNotFoundError:
+                    log.error("O arquivo de origem não foi encontrado.")
+                    continue
+                except OSError as e:
+                    log.error(f"Ocorreu um erro no sistema operacional ao mover o arquivo: {e}")
+                    exit(1)
+                    
+                moved_files += 1
+    
+                log.info(f'Arquivo "{file.name}" movido para "{destination_folder}".')
+                
+            log.info(f'{moved_files} de {qty_files} arquivos foram movidos com sucesso.')
 
 def main():
     try:
         log = setup_logger()
         log.info('Iniciando aplicação.')
+        files = get_files_from_origin(origin_path='Downloads')
+        move_files(files=files, log=log)
+        log.info('Processo finalizado com sucesso.')
         
-        src_dir = Path(__file__).parent.resolve()
-        inputs = src_dir.parent / 'inputs'
-        outputs = src_dir.parent / 'outputs'
-        files = os.listdir(inputs)
-        qty_files = len(files)
-        
-        if not inputs.exists():
-            log.error('Erro ao acessar pasta de origem.')
-            raise Exception('Caminho de origem não encontrado')
-        
-        if qty_files > 0:
-            log.info(f'Movendo {qty_files} arquivos para pastas destino.')
-            doc_file_suffixes = ('.pdf', '.txt', '.xlsx', '.md')
-            img_file_suffixes = ('.jpeg', '.jpg')
-            
-            
-            for file in files:
-                
-                if file.endswith(doc_file_suffixes):
-                    shutil.move(inputs/file,outputs/'docs')
-                    log.info(f'Arquivo: {file} movido para docs.')
-                elif file.endswith(img_file_suffixes):
-                    shutil.move(inputs/file,outputs/'img')
-                    log.info(f'Arquivo: {file} movido para img.')
-                    
-            log.info(f'{len(files)} arquivos foram movidos com sucesso.')
-        else:
-            log.info('Nenhum arquivo para movimentação.')
-            exit(0)
-            
     except Exception as e:
-        print(f'Erro global na aplicação: {e}')
+        log.error(f'Erro global na aplicação: {e}')
+        log.info('O processo encerrou com falha.')
         exit(1)
-
 
 if __name__ == '__main__':
     main()
