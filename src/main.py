@@ -11,9 +11,7 @@ def main():
 
         log.info('Iniciando aplicação.')
 
-        files = get_files_from_origin(
-            origin_path='Downloads'
-        )
+        files = get_files_from_origin()
 
         move_files(
             files=files,

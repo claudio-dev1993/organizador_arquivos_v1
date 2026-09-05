@@ -1,17 +1,17 @@
 from pathlib import Path
 
-from app.config.file_categories import FILE_CATEGORIES
-from app.config.paths import PATH_HOME
+from ..config.file_categories import FILE_CATEGORIES
+from ..config.paths import PATH_HOME
 
 
-def get_file_category(file: Path) -> dict | None:
+def get_file_category(file: Path) -> str | None:
 
     suffix = file.suffix.lower()
 
     for category, config in FILE_CATEGORIES.items():
 
         if suffix in config['suffixes']:
-            return config
+            return category
 
     return None
 
