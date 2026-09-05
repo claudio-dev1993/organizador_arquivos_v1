@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 import logging
 
-from app.config.paths import PATH_HOME
+from ..config.paths import LOG_DIR
 
 
 def clear_logs(log_path: Path, file_limit: int):
@@ -52,20 +52,13 @@ def setup_logger() -> logging.Logger:
         logger.setLevel(logging.INFO)
 
         if not logger.handlers:
-
-            base_dir = PATH_HOME / 'Downloads'
-
-            log_dir = (
-                base_dir / 'logs_organizador_arquivos'
-            )
-
-            log_dir.mkdir(
+            LOG_DIR.mkdir(
                 parents=True,
                 exist_ok=True
             )
 
             log_filename = (
-                log_dir /
+                LOG_DIR /
                 f"{datetime.now().strftime('%d-%m-%Y_%H%M%S')}.log"
             )
 
@@ -78,7 +71,7 @@ def setup_logger() -> logging.Logger:
             )
 
             clear_logs(
-                log_path=log_dir,
+                log_path=LOG_DIR,
                 file_limit=10
             )
 

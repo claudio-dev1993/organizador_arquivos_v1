@@ -1,5 +1,3 @@
-from app.config.paths import PATH_HOME
-
 
 FILE_CATEGORIES = {
 
@@ -16,7 +14,7 @@ FILE_CATEGORIES = {
             '.rtf',
             '.odt',
         ),
-        'destination': PATH_HOME / 'Documents',
+        
     },
 
     'images': {
@@ -30,7 +28,7 @@ FILE_CATEGORIES = {
             '.webp',
             '.svg',
         ),
-        'destination': PATH_HOME / 'Pictures',
+        
     },
 
     'audio': {
@@ -43,7 +41,7 @@ FILE_CATEGORIES = {
             '.m4a',
             '.wma',
         ),
-        'destination': PATH_HOME / 'Music',
+        
     },
 
     'videos': {
@@ -56,7 +54,7 @@ FILE_CATEGORIES = {
             '.flv',
             '.webm',
         ),
-        'destination': PATH_HOME / 'Videos',
+        
     },
 
     'archives': {
@@ -68,7 +66,7 @@ FILE_CATEGORIES = {
             '.gz',
             '.bz2',
         ),
-        'destination': PATH_HOME / 'Downloads',
+        
     },
 
     'executables': {
@@ -80,6 +78,6 @@ FILE_CATEGORIES = {
             '.com',
             '.ini',
         ),
-        'destination': PATH_HOME / 'Downloads',
+        
     },
 }

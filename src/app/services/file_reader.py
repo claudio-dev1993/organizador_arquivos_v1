@@ -1,12 +1,12 @@
-from app.config.paths import PATH_HOME
+from pathlib import Path
+
+from ..config.settings import get_source_folder
 
 
-def get_files_from_origin(origin_path: str) -> list:
-
-    inputs = PATH_HOME / origin_path
+def get_files_from_origin() -> list[Path]:
+    inputs = get_source_folder()
 
     if not inputs.exists():
-
         raise FileNotFoundError(
             f'Caminho de origem não encontrado: {inputs}'
         )
