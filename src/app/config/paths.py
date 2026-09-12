@@ -20,6 +20,5 @@ APP_DATA_DIR = (
 
 LOG_DIR = APP_DATA_DIR / 'logs_organizador_arquivos'
 
-
 UNRECOGNIZED_DIR = WINDOWS_FOLDERS['Downloads'] / 'nao_categorizados'
 

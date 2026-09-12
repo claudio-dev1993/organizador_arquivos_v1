@@ -13,21 +13,13 @@ def main():
 
         files = get_files_from_origin()
 
-        move_files(
-            files=files,
-            log=log
-        )
+        move_files(files=files,log=log)
 
         log.info('Processo finalizado com sucesso.')
 
     except Exception as e:
-
-        log.error(
-            f'Erro global na aplicação: {e}'
-        )
-
+        log.error(f'Erro global na aplicação: {e}')
         log.info('O processo encerrou com falha.')
-
         exit(1)
 
 
