@@ -13,7 +13,7 @@ def move_files(files: list, log: logging.Logger):
         log.info('Nenhum arquivo para movimentação.')
         return
 
-    log.info(f'Movendo {qty_files} arquivos para pastas destino.')
+    log.info(f'Movendo {qty_files} arquivo(s) para pastas destino.')
 
     for file in files:
         category = get_file_category(file)
@@ -24,34 +24,20 @@ def move_files(files: list, log: logging.Logger):
         else:
             destination_folder = get_category_destination(category)
 
-        destination_folder.mkdir(
-            parents=True,
-            exist_ok=True
-        )
+        destination_folder.mkdir(parents=True,exist_ok=True)
 
         try:
-            shutil.move(
-                str(file),
-                str(destination_folder / file.name)
-            )
+            shutil.move(str(file),str(destination_folder / file.name))
 
             moved_files += 1
 
-            log.info(
-                f'Arquivo "{file.name}" movido para '
-                f'"{destination_folder}".'
-            )
+            log.info(f'Arquivo "{file.name}" movido para "{destination_folder}".')
 
         except PermissionError:
-            log.error(
-                f'O arquivo {file} não foi movido '
-                f'por estar aberto ou em uso por outro programa.'
-            )
+            log.error(f'O arquivo {file} não foi movido por estar aberto ou em uso por outro programa.')
 
         except FileNotFoundError:
-            log.error(
-                'O arquivo de origem não foi encontrado.'
-            )
+            log.error('O arquivo de origem não foi encontrado.')
 
         except OSError as e:
             log.error(
