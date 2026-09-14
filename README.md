@@ -32,7 +32,7 @@ Usuários que baixam arquivos da internet regularmente acabam acumulando-os na p
 - C:\Users\claud\Videos - arquivos típicos de vídeo
   
 ## 💻 Instalação
-1. Baixe o executável para Windows
+1. Baixe o executável para Windows [aqui](docs/executavel.exe)
 2. Siga o assistente de instalação e defina os dias e horários de execução
 3. Conclua a instalação e pronto.
 4. Um atalho pode ser criado na área de trabalho que permite a execução manual do script
@@ -41,25 +41,26 @@ Usuários que baixam arquivos da internet regularmente acabam acumulando-os na p
 Aqui é descrito qual era o cenário a ser automatizado e como foi elaborada a solução do problema através dos documentos criados.
 
 ### Descrição do processo atual
-[Descrição do Processo Atual](docs/Descricao-do-Processo-Atual.docx)
+[Descrição do Processo Atual](docs/descricao_processo_atual.pdf)
 
 ### Modelagem(AS-IS) do processo atual
 Processo manual realizado pelo usuário antes da automação:
 
-![Modelagem AS-IS do processo Organizador de Arquivos](docs/modelagem-as-is.png)
+![Modelagem AS-IS do processo Organizador de Arquivos](docs/modelagem_as_is.png)
 
 ### Modelagem(TO-BE) do processo
 Processo executado pelo programa, sem intervenção do usuário:
 
-![Modelagem TO-BE do processo Organizador de Arquivos](docs/modelagem-to-be.png)
+![Modelagem TO-BE do processo Organizador de Arquivos](docs/modelagem_to_be.png)
 
 ### PDD - Process Definition Document
 Documento de Definição do processo:
 
-[PDD – Documento de Definição de Processo](docs/PDD-Organizador-de-Arquivos.pdf)
+[PDD – Documento de Definição de Processo](docs/process_definition_document.pdf)
   
 ## Limitações da automação
 1. Não é possível definir manualmente o caminho de destino para os arquivos.
 2. Só é possível agendar os dias e horário de execução durante a instalação.
 3. Não é possível definir manualmente pasta de origem dos arquivos.
 4. O programa está em desenvolvimento e pode apresentar falhas durante a execução (verificar logs na pasta específica).
+5. O executável não está assinado para o Windows e eventualmente pode apresentar conflito com o Windows Defender.
